@@ -1,1 +1,4 @@
-#define LONG long long
+#define SIZE_OF_ID 31
+#define SIZE_OF_TEXT 100
+
+#define MAX_TOKENS 100000LL
