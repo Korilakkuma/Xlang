@@ -13,20 +13,7 @@ int main(int argc, char **argv) {
     exit(EXIT_FAILURE);
   }
 
-  Token *tokens = malloc(MAX_TOKENS * sizeof(Token));
-
-  lexer(source_file, tokens);
-
-  Token token;
-
-  int p = 0;
-
-  do {
-    token = tokens[p++];
-    printf("%-10s %3d %d\n", token.text, token.type, token.value);
-  } while (strncmp("", token.text, 1) != 0);
-
-  free(tokens);
+  dump_lexer(source_file);
 
   return 0;
 }
