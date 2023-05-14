@@ -2,11 +2,13 @@ CC      := gcc
 CFLAGS  := -std=c99 -O2 -Wall
 
 all     : bin/x
-bin/x   : main.o lexer.o
+bin/x   : main.o lexer.o parser.o
 	$(CC) $^ -o $@
 main.o  : cli/main.c
 	$(CC) -c $(CFLAGS) $<
 lexer.o : src/lexer/lexer.c
+	$(CC) -c $(CFLAGS) $<
+parser.o : src/parser/parser.c
 	$(CC) -c $(CFLAGS) $<
 
 format  :
