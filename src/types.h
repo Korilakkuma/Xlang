@@ -17,3 +17,8 @@ typedef struct {
   int address;
 } Symbol;
 
+typedef struct {
+  unsigned char opcode;
+  unsigned char flag;
+  int opdata;
+} Instruction;
