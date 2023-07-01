@@ -2,18 +2,26 @@
 
 int main(int argc, char **argv) {
   if (argc != 2) {
-    fputs("./bin/x source\n", stderr);
+    fputs("./bin/x [--code] source\n", stderr);
     exit(EXIT_FAILURE);
   }
 
-  FILE *source_file = fopen(argv[1], "r");
+  FILE *sourcefile = fopen(argv[1], "r");
 
-  if (source_file == NULL) {
+  if (sourcefile == NULL) {
     perror("fopen");
     exit(EXIT_FAILURE);
   }
 
-  dump_lexer(source_file);
+  if (compile(sourcefile)) {
+    if ((argc == 3) && (strncmp(argv[2], "--code", 6) == 0)) {
+      dump();
 
-  return 0;
+      return 0;
+    }
+
+    return execute();
+  }
+
+  return 1;
 }
