@@ -1,19 +1,32 @@
 #include "../types.h"
 
-static Token look_ahead_token(void);
+int local_address;
 
-static void statement(Token *token, FILE *source_file);
-static void expression(FILE *source_file);
+#define START_LOCAL_ADDRESS (1 * SIZE_OF_INT)
 
-static void operate(TokenType op);
-static void push(int n);
-static int pop(void);
+#define INT_POINTER (int *)(p)
 
-static void or_expression(FILE *source_file);
-static void and_expression(FILE *source_file);
-static void equal_expression(FILE *source_file);
-static void relation_expression(FILE *source_file);
-static void add_expression(FILE *source_file);
-static void multi_expression(FILE *source_file);
+#define SIZE_OF_LOOP 20
+#define SIZE_OF_SWITCH 10
+#define SIZE_OF_CASE 100
 
-static void factor(FILE *source_file);
+static struct {
+  TokenType type;
+  int top;
+  bool has_break;
+} loop_nests[SIZE_OF_LOOP];
+
+static struct {
+  int default_address;
+  int start_case_list;
+} switch_nests[SIZE_OF_SWITCH];
+
+static struct {
+  int value;
+  int address;
+} cases[SIZE_OF_CASE];
+
+extern Token next_token(void);
+extern void generate_code3(OperationCode op, int data, int address);
+extern void display_error(const char *error_message1,
+                          const char *error_message2);

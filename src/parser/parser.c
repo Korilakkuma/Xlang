@@ -1,23 +1,91 @@
 #include "parser.h"
-#include <stdio.h>
 
-#define SIZE_OF_STACK 20
+static Token token;
+static TokenType last_statement;
 
-Token token;
+static Symbol *function_pointer = NULL;
+static Symbol tmp_symbol = {"", LITERAL_ID, NON_T, GLOBAL, 0, 0, 0};
 
-int stack[SIZE_OF_STACK];
-int stack_pointer = 0;
+static int nest_of_break = 0;
 
-int vars[10000];
+static int counter_for_nest = 0;
+static int counter_for_switch = 0;
+static int counter_for_case = 0;
 
-void parser(void) {}
+static int number_of_errors = 0;
 
-static Token look_ahead_token(void) {
-  Token token;
+bool compile(FILE *sourcefile) {
+  generate_code2(CALL, -1);
+  generate_code(STOP);
 
-  return token;
+  token = next_token();
+
+  while (token.type != TOKEN_TYPE_EOF_TOKEN) {
+    switch (token.type) {
+    case TOKEN_TYPE_INT:
+    case TOKEN_TYPE_VOID:
+      set_type();
+      set_name();
+
+      if (token.type == '(') {
+        function_declare();
+      } else {
+        variable_declare();
+      }
+
+      break;
+    case TOKEN_TYPE_SEMICOLON:
+      token = next_token();
+      break;
+    default:
+      display_error("Syntax Error\n", token.text);
+      token = next_token();
+    }
+  }
+
+  if (counter_for_error == 0) {
+    backpatch_calladdress();
+  }
+
+  *INT_POINTER(memory_address(0)) = global_malloc(0);
+
+  if (counter_for_error > 0) {
+    fprintf(stderr, "%d errors occurred\n", counter_for_error);
+  }
+
+  return (bool)(counter_for_error == 0);
 }
 
+/*
+void variable_declare(void);
+void function_declare(void);
+void check_function(Symbol *symbol1, Symbol *symbol2);
+void function_declare_begin(void);
+void function_declare_end(void);
+void set_main(void);
+void block(bool is_function);
+void statement(void);
+void continue_or_break_begin(TokenType type);
+void continue_or_break_edn(void);
+int get_looptop(void);
+void switch_begin(void);
+void switch_end(void);
+void check_expression(TokenType *type1, TokenType *type2);
+void expression(void);
+void term(int n);
+void factor(void);
+void call_function(Symbol *symbol);
+void call_system_function(TokenType *type);
+void set_type(void);
+void set_name(void);
+void set_array_size(void);
+void set_address(Symbol *symbol);
+int operation_order(TokenType *type);
+int local_malloc(int size);
+bool is_global(void);
+bool check_format(char *format);
+int execute(void);
+void dump(void);
 static void statement(Token *token, FILE *source_file) {
   switch (token->type) {
   case VARIABLE:
@@ -199,3 +267,4 @@ static void factor(FILE *source_file) {
 
   token = next_token(source_file);
 }
+*/
