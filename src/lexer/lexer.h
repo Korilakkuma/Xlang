@@ -1,12 +1,11 @@
 #include "../types.h"
 
 static void init_type(void);
+Token next_token(void);
 static int next_char(FILE *source_file);
+static bool is_ope2(int ch1, int ch2);
 static void set_token_type(Token *token);
-
-static inline bool is_ope2(const int c1, const int c2);
-static inline void exit_by_error(const char *s);
-
+static Token check_next_token(Token token, TokenType type);
 static TokenType types[256];
 
 typedef struct {
