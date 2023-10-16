@@ -46,3 +46,19 @@ PROCESSORS get_processor_code(void) {
 const char *get_processor_enum_name(PROCESSORS processor_code) {
   return processor_enum_names[processor_code];
 }
+
+void get_registers(REGISTERS registers) {
+  PROCESSORS processor_code = get_processor_code();
+
+  for (int i = 0; i < 4; i++) {
+    const char *r = registers_map[processor_code][i];
+
+    strncpy(registers[i], r, (strlen(r) + 1));
+  }
+}
+
+void get_r0_register_name(char *r0) {
+  PROCESSORS processor_code = get_processor_code();
+
+  strncpy(r0, registers_map[processor_code][0], (strlen(registers_map[processor_code][0]) + 1));
+}
