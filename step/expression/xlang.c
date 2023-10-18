@@ -4,15 +4,12 @@
 
 enum {
   ADD = '+',
-  SUB = '-',
-  MUL = '*',
-  DIV = '/',
-  MOD = '%'
+  SUB = '-'
 } OPERATORS;
 
 int main(int argc, char **argv) {
   if (argc != 2) {
-    fputs("./xlang [0-9]+[+-][0-9]+\n", stderr);
+    fputs("./xlang ([0-9]+[+-][0-9])+\n", stderr);
     exit(EXIT_FAILURE);
   }
 
@@ -63,51 +60,6 @@ int main(int argc, char **argv) {
         } else {
           fprintf(stdout, "		sub %s, %s, %ld\n", r0, r0, operand2);
         }
-
-        break;
-      }
-
-      case MUL: {
-        ++p;
-
-        long operand2 = strtol(p, &p, 0);
-
-        if ((processor_code == Intel32) || (processor_code == Intel64)) {
-          fprintf(stdout, "		mul %s, %ld\n", r0, operand2);
-        } else {
-          fprintf(stdout, "		mov %s, %ld\n", r1, operand2);
-          fprintf(stdout, "		mul %s, %s, %s\n", r0, r0, r1);
-        }
-
-        break;
-      }
-
-      case DIV: {
-        ++p;
-
-        long operand2 = strtol(p, &p, 0);
-
-        if (operand2 == 0) {
-          fputs("Zero Division Error\n", stderr);
-          exit(EXIT_FAILURE);
-        }
-
-        fprintf(stdout, "		div %s, %ld\n", r0, operand2);
-
-        break;
-      }
-
-      case MOD: {
-        ++p;
-
-        long operand2 = strtol(p, &p, 0);
-
-        if (operand2 == 0) {
-          fputs("Zero Division Error\n", stderr);
-          exit(EXIT_FAILURE);
-        }
-
-        fprintf(stdout, "		mod %s, %ld\n", r0, operand2);
 
         break;
       }
