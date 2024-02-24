@@ -6,9 +6,7 @@ int main(int argc, char **argv) {
     exit(EXIT_FAILURE);
   }
 
-  input = argv[1];
-
-  tokenize(input);
+  tokenize(argv[1]);
 
   struct Node *node = expression();
 

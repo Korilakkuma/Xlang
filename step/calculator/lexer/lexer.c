@@ -1,6 +1,8 @@
 #include "lexer.h"
 
 static struct Token *current_token;
+static char *input;
+static char *current_input;
 
 static struct Token *create_token(TokenType type, struct Token *current, char *text);
 static void handle_lexer_error(char *fmt, ...);
@@ -12,9 +14,13 @@ void tokenize(char *p) {
 
   current_token = &head;
 
+  input         = p;
+  current_input = p;
+
   while (*p) {
     if (isspace(p[0])) {
       ++p;
+      ++current_input;
       continue;
     }
 
@@ -28,6 +34,7 @@ void tokenize(char *p) {
       case LEFT_PARENTHESES :
       case RIGHT_PARENTHESES: {
         current_token = create_token(OPERATOR, current_token, p++);
+        ++current_input;
         is_operator = true;
         break;
       }
@@ -44,10 +51,11 @@ void tokenize(char *p) {
     if (isdigit(p[0])) {
       current_token = create_token(NUMBER, current_token, p);
       current_token->value = strtol(p, &p, 10);
+      current_input = p;
       continue;
     }
 
-    handle_lexer_error("Cannot Tokenize\n");
+    handle_lexer_error(p, "Cannot Tokenize\n");
   }
 
   create_token(EOT, current_token, p);
@@ -104,7 +112,15 @@ static struct Token *create_token(TokenType type, struct Token *current, char *t
 static void handle_lexer_error(char *fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
+
+  int p = current_input - input;
+
+  fprintf(stderr, "%s\n", input);
+  fprintf(stderr, "%*s", p, " ");
+  fprintf(stderr, "^ ");
   vfprintf(stderr, fmt, ap);
+  fprintf(stderr, "\n");
+
   va_end(ap);
   exit(EXIT_FAILURE);
 }
