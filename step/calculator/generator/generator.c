@@ -5,6 +5,12 @@ void generate(struct Node *node) {
     return;
   }
 
+  // PROCESSORS processor_code = get_processor_code();
+
+  REGISTERS registers;
+
+  get_registers(registers);
+
   if (node->type == NODE_NUMBER) {
     fprintf(stdout, "		push %ld\n", node->value);
     return;
@@ -14,21 +20,21 @@ void generate(struct Node *node) {
   generate(node->right);
 
   fprintf(stdout, "		pop rdi\n");
-  fprintf(stdout, "		pop rax\n");
+  fprintf(stdout, "		pop %s\n", registers[0]);
 
   switch (node->type) {
     case NODE_ADD: {
-      fprintf(stdout, "		add rax, rdi\n");
+      fprintf(stdout, "		add %s, rdi\n", registers[0]);
       break;
     }
 
     case NODE_SUB: {
-      fprintf(stdout, "		sub rax, rdi\n");
+      fprintf(stdout, "		sub %s, rdi\n", registers[0]);
       break;
     }
 
     case NODE_MUL: {
-      fprintf(stdout, "		imul rax, rdi\n");
+      fprintf(stdout, "		imul %s, rdi\n", registers[0]);
       break;
     }
 
@@ -43,5 +49,5 @@ void generate(struct Node *node) {
     }
   }
 
-  fprintf(stdout, "		push rax\n");
+  fprintf(stdout, "		push %s\n", registers[0]);
 }

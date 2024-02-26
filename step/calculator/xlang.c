@@ -6,17 +6,26 @@ int main(int argc, char **argv) {
     exit(EXIT_FAILURE);
   }
 
+  char r0[4];
+
+  get_r0_register_name(r0);
+
+  PROCESSORS processor_code = get_processor_code();
+
   tokenize(argv[1]);
 
   struct Node *node = expression();
 
-  fprintf(stdout, ".intel_syntax noprefix\n");
+  if ((processor_code == Intel32) || (processor_code == Intel64)) {
+    fprintf(stdout, ".intel_syntax noprefix\n");
+  }
+
   fprintf(stdout, ".globl main\n");
   fprintf(stdout, "main:\n");
 
   generate(node);
 
-  fprintf(stdout, "		pop rax\n");
+  fprintf(stdout, "		pop %s\n", r0);
   fprintf(stdout, "		ret\n");
 
   return 0;
