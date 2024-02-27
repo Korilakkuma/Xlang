@@ -7,4 +7,5 @@ extern long test_number_and_next(void);
 
 struct Node *expression(void);
 struct Node *term(void);
+struct Node *unary(void);
 struct Node *factor(void);

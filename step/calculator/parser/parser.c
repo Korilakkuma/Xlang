@@ -20,19 +20,33 @@ struct Node *expression(void) {
 }
 
 struct Node *term(void) {
-  struct Node *node = factor();
+  struct Node *node = unary();
 
   while (true) {
     if (test_operator_and_next('*')) {
-      node = create_node(NODE_MUL, node, factor());
+      node = create_node(NODE_MUL, node, unary());
     } else if (test_operator_and_next('/')) {
-      node = create_node(NODE_DIV, node, factor());
+      node = create_node(NODE_DIV, node, unary());
     } else {
       break;
     }
   }
 
   return node;
+}
+
+struct Node *unary(void) {
+  if (test_operator_and_next('+')) {
+    return factor();
+  }
+
+  if (test_operator_and_next('-')) {
+    struct Node *zero = create_node_with_number(0);
+
+    return create_node(NODE_SUB, zero, factor());
+  }
+
+  return factor();
 }
 
 struct Node *factor(void) {
