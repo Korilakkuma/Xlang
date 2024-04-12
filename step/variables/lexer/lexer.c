@@ -1,5 +1,7 @@
 #include "lexer.h"
 
+struct LocalVariable *locals;
+
 static struct Token *current_token;
 static char *input;
 static char *current_input;
@@ -98,7 +100,15 @@ void tokenize(char *p) {
     }
 
     if ((*p >= 'a') && (*p <= 'z')) {
-      current_token = create_token(IDENTIFIER, current_token, p++, 1);
+      char identifier[26];
+
+      while (isalpha(*p)) {
+        strncat(identifier, p++, 1);
+      }
+
+      identifier[strlen(identifier) + 1] = '\0';
+
+      current_token = create_token(IDENTIFIER, current_token, identifier, strlen(identifier));
       current_input = p;
       continue;
     }
@@ -144,18 +154,35 @@ long test_number_and_next(void) {
   return value;
 }
 
-char identifier_and_next(void) {
+struct Token *identifier_and_next(void) {
   struct Token *token = current_token;
 
   if (isalpha(token->text[0])) {
+    struct LocalVariable *v = (struct LocalVariable *)malloc(1 * sizeof(struct LocalVariable));
+
+    v->name   = token->text;
+    v->length = token->length;
+
+    locals = v;
+
     current_token = current_token->next;
   }
 
-  return token->text[0];
+  return token;
 }
 
 bool is_tokenize_end(void) {
   return current_token->type == EOT;
+}
+
+struct LocalVariable *find_local_variable(struct Token *token) {
+  for (struct LocalVariable *v = locals; v != NULL; v = v->next) {
+    if ((token->length == v->length) && !memcmp(token->text, v->name, v->length)) {
+      return v;
+    }
+  }
+
+  return NULL;
 }
 
 static struct Token *create_token(TokenType type, struct Token *current, char *text, size_t length) {

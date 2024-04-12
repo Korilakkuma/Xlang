@@ -14,6 +14,13 @@ typedef enum {
 typedef char REGISTERS[5][4];
 typedef REGISTERS REGISTERS_MAP[];
 
+struct LocalVariable {
+  struct LocalVariable *next;
+  char *name;
+  INT length;
+  INT offset;
+};
+
 typedef enum {
   IDENTIFIER,
   OPERATOR,

@@ -104,13 +104,29 @@ struct Node *unary(void) {
 }
 
 struct Node *factor(void) {
-  char c = identifier_and_next();
+  struct Token *token = identifier_and_next();
 
-  if (isalpha(c)) {
+  if (isalpha(token->text[0])) {
     struct Node *node = create_node(NODE_LOCAL_VARIABLE, NULL, NULL);
 
-    node->type   = NODE_LOCAL_VARIABLE;
-    node->offset = ((c - 'a') + 1) * 8;
+    node->type = NODE_LOCAL_VARIABLE;
+
+    struct LocalVariable *v = find_local_variable(token);
+
+    if (v) {
+      node->offset = v->offset;
+    } else {
+      struct LocalVariable *new_v = (struct LocalVariable *)malloc(1 * sizeof(struct Node));
+
+      new_v->next   = locals;
+      new_v->name   = token->text;
+      new_v->length = token->length;
+      new_v->offset = locals->offset + 8;
+
+      node->offset = new_v->offset;
+
+      locals = new_v;
+    }
 
     return node;
   }
