@@ -20,7 +20,17 @@ struct Node *statement(void) {
 
   if (test_operator_and_next("if")) {
     node = create_node(NODE_IF, expression(), NULL);
-  } else if (test_operator_and_next("return")) {
+
+    node->then = statement();
+
+    if (test_operator_and_next("else")) {
+      node->el = statement();
+    }
+
+    return node;
+  }
+
+  if (test_operator_and_next("return")) {
     node = create_node(NODE_RETURN, expression(), NULL);
   } else {
     node = expression();
