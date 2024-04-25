@@ -15,6 +15,22 @@ void generate(struct Node *node) {
 
   get_registers(registers);
 
+  if ((node->type == NODE_IF) && (node->left->type == NODE_ELSE)) {
+    fprintf(stdout, "		pop rax\n");
+    fprintf(stdout, "		cmp rax 0\n");
+    fprintf(stdout, "		je Lelse%ld\n", label);
+    // TODO: statement if true
+    fprintf(stdout, "		jmp Lend%ld\n", (label + 1));
+    fprintf(stdout, ".Lelse%ld\n", label);
+    // TODO: statement if false
+    fprintf(stdout, ".Lend%ld\n", (label + 1));
+
+    ++label;
+
+    return;
+  }
+
+
   if (node->type == NODE_IF) {
     fprintf(stdout, "		pop rax\n");
     fprintf(stdout, "		cmp rax 0\n");

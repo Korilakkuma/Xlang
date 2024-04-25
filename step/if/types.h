@@ -27,6 +27,7 @@ typedef enum {
   NUMBER,
   RETURN,
   IF,
+  ELSE,
   EOT
 } TokenType;
 
@@ -66,7 +67,8 @@ typedef enum {
   NODE_LOCAL_VARIABLE,
   NODE_NUMBER,
   NODE_RETURN,
-  NODE_IF
+  NODE_IF,
+  NODE_ELSE
 } NodeType;
 
 struct Node {

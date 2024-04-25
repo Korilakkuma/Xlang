@@ -20,6 +20,8 @@ struct Node *statement(void) {
 
   if (test_operator_and_next("if")) {
     node = create_node(NODE_IF, expression(), NULL);
+  } else if (test_operator_and_next("else")) {
+    // Next statement
   } else if (test_operator_and_next("return")) {
     node = create_node(NODE_RETURN, expression(), NULL);
   } else {

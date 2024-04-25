@@ -106,6 +106,13 @@ void tokenize(char *p) {
       continue;
     }
 
+    if ((strncmp(p, "else", 4) == 0) && (p[4] == ' ')) {
+      current_token = create_token(ELSE, current_token, p, 4);
+      p += 4;
+      current_input = p;
+      continue;
+    }
+
     if ((strncmp(p, "return", 6) == 0) && ((p[6] == ' ') || (p[6] == ';'))) {
       current_token = create_token(RETURN, current_token, p, 6);
       p += 6;
@@ -137,6 +144,12 @@ void tokenize(char *p) {
 
 bool test_operator_and_next(char *op) {
   if ((current_token->type == IF) && (strncmp(op, "if", 2) == 0)) {
+    current_token = current_token->next;
+
+    return true;
+  }
+
+  if ((current_token->type == ELSE) && (strncmp(op, "else", 4) == 0)) {
     current_token = current_token->next;
 
     return true;
